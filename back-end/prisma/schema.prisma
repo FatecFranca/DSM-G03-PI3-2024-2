@@ -9,6 +9,75 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+model Usuario {
+  id              String       @id @default(auto()) @map("_id") @db.ObjectId
+  nome            String
+  cpf             String       @unique
+  data_nascimento DateTime?
+  email           String       @unique
+  logradouro      String
+  num_casa        String
+  complemento     String?
+  bairro          String
+  municipio       String
+  uf              String
+  cep             String
+  celular         String
+  veiculo         Veiculo[]
+}
+
+model Oficina {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  razao_social    String
+  nome_fantasia   String?
+  cnpj            String        @unique
+  email           String        @unique
+  logradouro      String
+  num_casa        String
+  complemento     String?
+  bairro          String
+  municipio       String
+  uf              String
+  cep             String
+  celular         String
+  tipos_servicos  TipoServico[]
+}
+
+
+model TipoServico {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  nome            String
+  marca           String
+  especificacao   String?
+  quantidade      Float         // Quantidade na embalagem
+  unidade_medida  String
+  preco_unitario  Float
+  qtd_estoque     Float
+  ocficina_id     String        @db.ObjectId
+  oficina         Oficina       @relation(fields: [ocficina_id], references: [id])
+  servicos        Servico[]
+}
+
+model Servico {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  num_item        Int           
+  quantidade      Float
+  tipoServico_id  String        @db.ObjectId  
+  tipos_servico   TipoServico   @relation(fields: [tipoServico_id], references: [id])
+  veiculo_id      String        @db.ObjectId
+  veiculo         Veiculo       @relation(fields: [veiculo_id], references: [id])
+
+  @@unique([veiculo_id, num_item])
+}
+
+model Veiculo {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  num_venda       Int           @unique
+  data_hora       DateTime      @default(now())
+  servicos        Servico[]
+  usuario_id      String        @db.ObjectId
+  usuario         Usuario       @relation(fields: [usuario_id], references: [id])
 }

@@ -50,12 +50,9 @@ model Oficina {
 model TipoServico {
   id              String        @id @default(auto()) @map("_id") @db.ObjectId
   nome            String
-  marca           String
-  especificacao   String?
-  quantidade      Float         // Quantidade na embalagem
-  unidade_medida  String
-  preco_unitario  Float
-  qtd_estoque     Float
+  diasValidade    Int
+  kmValidade      Int
+  preco           Float
   ocficina_id     String        @db.ObjectId
   oficina         Oficina       @relation(fields: [ocficina_id], references: [id])
   servicos        Servico[]
@@ -63,14 +60,14 @@ model TipoServico {
 
 model Servico {
   id              String        @id @default(auto()) @map("_id") @db.ObjectId
-  num_item        Int           
-  quantidade      Float
+  num_serv        Int           
+  data_serv       DateTime
   tipoServico_id  String        @db.ObjectId  
   tipos_servico   TipoServico   @relation(fields: [tipoServico_id], references: [id])
   veiculo_id      String        @db.ObjectId
   veiculo         Veiculo       @relation(fields: [veiculo_id], references: [id])
 
-  @@unique([veiculo_id, num_item])
+  @@unique([veiculo_id, num_serv])
 }
 
 model Veiculo {

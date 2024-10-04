@@ -61,7 +61,7 @@ model TipoServico {
 model Servico {
   id              String        @id @default(auto()) @map("_id") @db.ObjectId
   num_serv        Int           
-  data_serv       DateTime
+  data_serv       DateTime      @default(now())
   tipoServico_id  String        @db.ObjectId  
   tipos_servico   TipoServico   @relation(fields: [tipoServico_id], references: [id])
   veiculo_id      String        @db.ObjectId
@@ -72,8 +72,11 @@ model Servico {
 
 model Veiculo {
   id              String        @id @default(auto()) @map("_id") @db.ObjectId
-  num_venda       Int           @unique
-  data_hora       DateTime      @default(now())
+  renavan         Int           @unique
+  marca           String
+  modelo          String
+  ano_modelo      Int
+  quilometragem   Int
   servicos        Servico[]
   usuario_id      String        @db.ObjectId
   usuario         Usuario       @relation(fields: [usuario_id], references: [id])

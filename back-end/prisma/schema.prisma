@@ -53,8 +53,8 @@ model TipoServico {
   diasValidade    Int
   kmValidade      Int
   preco           Float
-  ocficina_id     String        @db.ObjectId
-  oficina         Oficina       @relation(fields: [ocficina_id], references: [id])
+  oficina_id      String        @db.ObjectId
+  oficina         Oficina       @relation(fields: [oficina_id], references: [id])
   servicos        Servico[]
 }
 

@@ -78,6 +78,6 @@ model Veiculo {
   ano_modelo      Int
   quilometragem   Int
   servicos        Servico[]
-  usuario_id      String        @db.ObjectId
-  usuario         Usuario       @relation(fields: [usuario_id], references: [id])
+  usuario_id      String?        @db.ObjectId
+  usuario         Usuario?       @relation(fields: [usuario_id], references: [id])
 }

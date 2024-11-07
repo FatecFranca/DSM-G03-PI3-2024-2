@@ -15,4 +15,7 @@ app.use(cookieParser())
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
 
+/*************** ROTAS *******************/
+
+
 export default app

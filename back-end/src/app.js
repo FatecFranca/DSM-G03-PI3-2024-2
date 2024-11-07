@@ -23,6 +23,9 @@ app.use('/usuarios', usuariosRouter)
 import oficinasRouter from './routes/oficinas.js'
 app.use('/oficinas', oficinasRouter)
 
+import tipoServicosRouter from './routes/tipoServicos.js'
+app.use('/tipoServicos', tipoServicosRouter)
+
 import veiculosRouter from './routes/veiculos.js'
 app.use('/veiculos', veiculosRouter)
 

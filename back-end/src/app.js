@@ -23,4 +23,7 @@ app.use('/usuarios', usuariosRouter)
 import oficinasRouter from './routes/oficinas.js'
 app.use('/oficinas', oficinasRouter)
 
+import veiculosRouter from './routes/veiculos.js'
+app.use('/veiculos', veiculosRouter)
+
 export default app

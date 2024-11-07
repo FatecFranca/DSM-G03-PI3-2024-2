@@ -63,7 +63,7 @@ model Servico {
   num_serv        Int           
   data_serv       DateTime      @default(now())
   tipoServico_id  String        @db.ObjectId  
-  tipos_servico   TipoServico   @relation(fields: [tipoServico_id], references: [id])
+  tipo_servico    TipoServico   @relation(fields: [tipoServico_id], references: [id])
   veiculo_id      String        @db.ObjectId
   veiculo         Veiculo       @relation(fields: [veiculo_id], references: [id])
 

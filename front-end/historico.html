@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeCar - Histórico de Manutenções</title>
+    <link rel="stylesheet" href="styles/historico.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-cog"></i>
+            <span>SafeCar</span>
+        </div>
+        <div>
+            <a href="parts.html" class="active">Peças</a>
+            <a href="vehicles.html">Veículos</a>
+            <a href="historico.html">Histórico</a>
+        </div>
+        <div class="user-menu">
+            <a href="#"><i class="fas fa-user"></i> Meu Perfil</a>
+            <a href="index.html" class="logout-btn">Sair</a>
+
+        </div>
+
+    </nav>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Histórico de Manutenções</h1>
+            <div class="status-badge status-completed">
+                Total de Manutenções: 12
+            </div>
+        </div>
+
+        <div class="filters">
+            <input type="text" class="filter-input" placeholder="Buscar por peça...">
+            <select class="filter-input">
+                <option value="">Status</option>
+                <option value="completed">Concluída</option>
+                <option value="scheduled">Agendada</option>
+            </select>
+            <input type="date" class="filter-input">
+        </div>
+
+        <div class="maintenance-grid">
+            <!-- Card de manutenção 1 -->
+            <div class="maintenance-card">
+                <h3>
+                    <i class="fas fa-cog"></i>
+                    Troca de Óleo
+                </h3>
+                <div class="maintenance-info">
+                    <p><i class="fas fa-calendar"></i> Data: 15/03/2024</p>
+                    <p><i class="fas fa-tools"></i> Peça: Óleo do Motor</p>
+                    <p><i class="fas fa-dollar-sign"></i> Custo: R$ 250,00</p>
+                    <p><i class="fas fa-clock"></i> Próxima troca: 15/09/2024</p>
+                </div>
+                <span class="status-badge status-completed">Concluída</span>
+                <a href="#" class="details-btn">Ver Detalhes</a>
+            </div>
+
+            <!-- Card de manutenção 2 -->
+            <div class="maintenance-card">
+                <h3>
+                    <i class="fas fa-cog"></i>
+                    Troca de Pastilhas de Freio
+                </h3>
+                <div class="maintenance-info">
+                    <p><i class="fas fa-calendar"></i> Data: 20/03/2024</p>
+                    <p><i class="fas fa-tools"></i> Peça: Pastilhas de Freio</p>
+                    <p><i class="fas fa-dollar-sign"></i> Custo: R$ 180,00</p>
+                    <p><i class="fas fa-clock"></i> Próxima troca: 20/09/2024</p>
+                </div>
+                <span class="status-badge status-scheduled">Agendada</span>
+                <a href="#" class="details-btn">Ver Detalhes</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

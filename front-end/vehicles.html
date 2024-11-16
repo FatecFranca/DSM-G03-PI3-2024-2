@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Veículos - SafeCar</title>
+    <link rel="stylesheet" href="styles/vehicles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-cog"></i>
+            <span>SafeCar</span>
+        </div>
+        <div class="nav-links">
+            <a href="parts.html"><i class="fas fa-tools"></i> Peças</a>
+            <a href="vehicles.html" class="active"><i class="fas fa-car"></i> Veículos</a>
+            <a href="historico.html"><i class="fas fa-history"></i> Histórico</a>
+        </div>
+        <div class="user-menu">
+            <span class="user-name">Olá, Usuário</span>
+            <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Controle de Veículos</h1>
+            <button class="add-btn" onclick="showAddVehicleModal()">
+                <i class="fas fa-plus"></i> Novo Veículo
+            </button>
+        </header>
+
+        <div class="filters">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Buscar veículos...">
+            </div>
+            <div class="filter-group">
+                <select id="brandFilter">
+                    <option value="">Todas as Marcas</option>
+                    <option value="volkswagen">Volkswagen</option>
+                    <option value="fiat">Fiat</option>
+                    <option value="chevrolet">Chevrolet</option>
+                    <option value="toyota">Toyota</option>
+                </select>
+                <select id="yearFilter">
+                    <option value="">Todos os Anos</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                </select>
+                <select id="statusFilter">
+                    <option value="">Todos os Status</option>
+                    <option value="ativo">Ativo</option>
+                    <option value="manutencao">Em Manutenção</option>
+                    <option value="inativo">Inativo</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="vehicles-grid" id="vehiclesGrid">
+            <!-- Cards serão inseridos via JavaScript -->
+        </div>
+    </div>
+
+    <!-- Modal Adicionar/Editar Veículo -->
+    <div id="vehicleModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Adicionar Novo Veículo</h2>
+            <form id="vehicleForm">
+                <input type="hidden" id="vehicleId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vehicleBrand">Marca</label>
+                        <select id="vehicleBrand" required>
+                            <option value="">Selecione uma marca</option>
+                            <option value="volkswagen">Volkswagen</option>
+                            <option value="fiat">Fiat</option>
+                            <option value="chevrolet">Chevrolet</option>
+                            <option value="toyota">Toyota</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="vehicleModel">Modelo</label>
+                        <input type="text" id="vehicleModel" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vehicleYear">Ano</label>
+                        <input type="number" id="vehicleYear" min="1900" max="2024" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vehiclePlate">Placa</label>
+                        <input type="text" id="vehiclePlate" required pattern="[A-Z]{3}[0-9][0-9A-Z][0-9]{2}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vehicleColor">Cor</label>
+                        <input type="text" id="vehicleColor" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vehicleKm">Quilometragem</label>
+                        <input type="number" id="vehicleKm" min="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="vehicleStatus">Status</label>
+                    <select id="vehicleStatus" required>
+                        <option value="ativo">Ativo</option>
+                        <option value="manutencao">Em Manutenção</option>
+                        <option value="inativo">Inativo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="vehicleNotes">Observações</label>
+                    <textarea id="vehicleNotes"></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="submit-btn">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="scripts/vehicles.js"></script>
+</body>
+</html>

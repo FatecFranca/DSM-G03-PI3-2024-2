@@ -1,21 +1,54 @@
-@import 'common.css';
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
 
-/* Navbar Styles */
+body {
+    background-color: #f5f5dc !important; /* Updated to match parts.css background */
+    color: #333;
+    line-height: 1.6;
+}
+
+/**menu**/
+
+/* Navbar */
 .navbar {
     background-color: #fff;
-    padding: 1rem 2rem;
+    padding: 1rem 5%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    position: sticky;
 }
 
-.nav-links {
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000;
+}
+
+.logo i {
+    font-size: 1.8rem;
+    color: #000; 
+}
+
+/* Navigation Menu */
+.navbar div {
     display: flex;
     gap: 2rem;
 }
 
-.nav-links a {
+.navbar div a {
     text-decoration: none;
     color: #666;
     display: flex;
@@ -26,16 +59,23 @@
     transition: all 0.3s;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
+.navbar div a:hover,
+.navbar div a.active {
     background-color: #000;
     color: #fff;
 }
 
+/* User Menu */
 .user-menu {
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+.user-menu a {
+    text-decoration: none;
+    color: #666;
+    transition: color 0.3s;
 }
 
 .logout-btn {

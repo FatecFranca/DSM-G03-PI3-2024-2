@@ -1,4 +1,3 @@
-/* Base */
 * {
     margin: 0;
     padding: 0;
@@ -10,7 +9,10 @@ body {
     background-color: #f5f5dc;
     color: #333;
     padding-top: 70px;
+    line-height: 1.6;
 }
+
+/**menu**/
 
 /* Navbar */
 .navbar {
@@ -28,10 +30,17 @@ body {
 
 /* Logo */
 .logo {
+    display: flex;
+    align-items: center;
+    gap: 0;
     font-size: 1.5rem;
     font-weight: bold;
     color: #000;
-    text-decoration: none;
+}
+
+.logo i {
+    font-size: 1.8rem;
+    color: #000; 
 }
 
 /* Navigation Menu */
@@ -85,6 +94,8 @@ body {
 .logout-btn:hover {
     background-color: #333;
 }
+
+/**fim do menu**/
 
 /* Main Content */
 .main-content {

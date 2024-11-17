@@ -2,12 +2,21 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
     font-family: Arial, sans-serif;
 }
 
 body {
-    background-color: #f5f5dc; /* Updated to match parts.css background */
-    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante que o body ocupe toda a altura da tela */
+    background-color: #e6c598; 
+    color: #000;
     line-height: 1.6;
 }
 
@@ -15,7 +24,7 @@ body {
 
 /* Navbar */
 .navbar {
-    background-color: #fff;
+    background-color: #1e1e1e;
     padding: 1rem 5%;
     display: flex;
     justify-content: space-between;
@@ -34,23 +43,23 @@ body {
     gap: 0;
     font-size: 1.5rem;
     font-weight: bold;
-    color: #000;
+    color: #e6c598;
 }
 
 .logo i {
-    font-size: 1.8rem;
-    color: #000; 
+    font-size: 2.2rem;
+    color: #e6c598; 
 }
 
 /* Navigation Menu */
 .navbar div {
     display: flex;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 .navbar div a {
     text-decoration: none;
-    color: #666;
+    color: #e6c598;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -61,8 +70,8 @@ body {
 
 .navbar div a:hover,
 .navbar div a.active {
-    background-color: #000;
-    color: #fff;
+    background-color: #e8d5b7;
+    color: #1e1e1e;
 }
 
 /* User Menu */
@@ -74,29 +83,29 @@ body {
 
 .user-menu a {
     text-decoration: none;
-    color: #666;
+    color: #e6c598;
     transition: color 0.3s;
 }
 
 .logout-btn {
-    background-color: #000;
-    color: #fff;
+    background-color: #e8d5b7;
+    color: #000;
     padding: 0.5rem 1rem;
     border-radius: 5px;
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     transition: background-color 0.3s;
 }
 
 .logout-btn:hover {
-    background-color: #333;
+    background-color: #1e1e1e;
 }
 
 /* Container principal */
 .container {
-    max-width: 1400px; /* Updated to match parts.css */
+    flex: 1;
+    max-width: 1200px; /* Updated to match parts.css */
     margin: 2rem auto;
     padding: 0 1rem;
 }
@@ -111,12 +120,12 @@ body {
 
 .page-header h1 {
     font-size: 2rem;
-    color: #333;
+    color: #000;
 }
 
 .add-btn {
     background-color: #000; /* Updated to match parts.css */
-    color: white;
+    color: #e6c598;
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: 5px;
@@ -129,7 +138,7 @@ body {
 }
 
 .add-btn:hover {
-    background-color: #333;
+    background-color: #1e1e1e;
 }
 
 /* Filtros */
@@ -151,7 +160,7 @@ body {
     left: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: #666;
+    color: #e8d5b7;
 }
 
 .search-box input {
@@ -443,4 +452,14 @@ body {
 
 .vehicle-card {
     animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Footer */
+.footer {
+    background-color: #1e1e1e;
+    color: #e8d5b7;
+    text-align: center;
+    padding: 1rem;
+    position: relative;
+    width: 100%;
 }

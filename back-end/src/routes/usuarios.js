@@ -21,4 +21,4 @@ router.put('/:id', controller.update);
 // Rota para deletar um usuário
 router.delete('/:id', controller.delete);
 
-export default router;
+export default router

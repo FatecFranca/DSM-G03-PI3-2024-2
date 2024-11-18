@@ -35,4 +35,4 @@ app.use('/tipoServicos', tipoServicosRouter)
 import veiculosRouter from './routes/veiculos.js'
 app.use('/veiculos', veiculosRouter)
 
-export default app
+export default app;

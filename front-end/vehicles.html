@@ -68,8 +68,8 @@
         </div>
     </div>
 
-    <!-- Modal Adicionar/Editar Veículo -->
-    <div id="vehicleModal" class="modal">
+     <!-- Modal Adicionar/Editar Veículo -->
+     <div id="vehicleModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle">Adicionar Novo Veículo</h2>
@@ -111,13 +111,19 @@
                         <input type="number" id="vehicleKm" min="0" required>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="vehicleStatus">Status</label>
-                    <select id="vehicleStatus" required>
-                        <option value="ativo">Ativo</option>
-                        <option value="manutencao">Em Manutenção</option>
-                        <option value="inativo">Inativo</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vehicleRenavam">Renavam</label>
+                        <input type="number" id="vehicleRenavam" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vehicleStatus">Status</label>
+                        <select id="vehicleStatus" required>
+                            <option value="ativo">Ativo</option>
+                            <option value="manutencao">Em Manutenção</option>
+                            <option value="inativo">Inativo</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="vehicleNotes">Observações</label>

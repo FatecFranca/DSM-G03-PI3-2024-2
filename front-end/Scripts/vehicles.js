@@ -13,6 +13,7 @@ function closeModal() {
 document.getElementById('vehicleForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
+    const vehicleId = document.getElementById('vehicleId').value;
     const brand = document.getElementById('vehicleBrand').value;
     const model = document.getElementById('vehicleModel').value;
     const year = document.getElementById('vehicleYear').value;
@@ -23,7 +24,7 @@ document.getElementById('vehicleForm').addEventListener('submit', async function
     const status = document.getElementById('vehicleStatus').value;
     const notes = document.getElementById('vehicleNotes').value;
 
-    const userId = localStorage.getItem('userId'); // Obtém o ID do usuário logado
+    const userId = localStorage.getItem('userId');
 
     if (!userId) {
         alert('Erro: usuário não está logado.');
@@ -44,8 +45,14 @@ document.getElementById('vehicleForm').addEventListener('submit', async function
     };
 
     try {
-        const response = await fetch('http://localhost:8080/veiculos', {
-            method: 'POST',
+        const url = vehicleId 
+            ? `http://localhost:8080/veiculos/${vehicleId}`
+            : 'http://localhost:8080/veiculos';
+        
+        const method = vehicleId ? 'PUT' : 'POST';
+
+        const response = await fetch(url, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -53,12 +60,12 @@ document.getElementById('vehicleForm').addEventListener('submit', async function
         });
 
         if (response.ok) {
-            alert('Veículo cadastrado com sucesso!');
+            alert(vehicleId ? 'Veículo atualizado com sucesso!' : 'Veículo cadastrado com sucesso!');
             closeModal();
             loadVehicles(); // Recarrega a lista de veículos
         } else {
             const errorData = await response.json();
-            alert('Erro ao cadastrar veículo: ' + (errorData.message || 'Erro desconhecido'));
+            alert('Erro ao ' + (vehicleId ? 'atualizar' : 'cadastrar') + ' veículo: ' + (errorData.message || 'Erro desconhecido'));
         }
     } catch (error) {
         console.error('Erro ao enviar dados:', error);
@@ -68,8 +75,14 @@ document.getElementById('vehicleForm').addEventListener('submit', async function
 
 // Função para carregar a lista de veículos
 async function loadVehicles() {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        console.error('Usuário não está logado');
+        return;
+    }
+
     try {
-        const response = await fetch('http://localhost:8080/veiculos', {
+        const response = await fetch(`http://localhost:8080/veiculos?usuario_id=${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -80,7 +93,7 @@ async function loadVehicles() {
             const vehicles = await response.json();
             displayVehicles(vehicles);
         } else {
-            console.error('Erro ao carregar veículos');
+            console.error('Erro ao carregar veículos:', await response.text());
         }
     } catch (error) {
         console.error('Erro ao conectar ao servidor:', error);
@@ -90,7 +103,14 @@ async function loadVehicles() {
 // Função para exibir a lista de veículos na interface do usuário
 function displayVehicles(vehicles) {
     const vehiclesGrid = document.getElementById('vehiclesGrid');
+    const errorMessage = document.getElementById('errorMessage');
     vehiclesGrid.innerHTML = '';
+    errorMessage.textContent = '';
+
+    if (vehicles.length === 0) {
+        errorMessage.textContent = 'Nenhum veículo encontrado.';
+        return;
+    }
 
     vehicles.forEach(vehicle => {
         const vehicleCard = document.createElement('div');
@@ -105,10 +125,57 @@ function displayVehicles(vehicles) {
             <p><strong>Renavam:</strong> ${vehicle.renavan}</p>
             <p><strong>Status:</strong> ${vehicle.status}</p>
             <p><strong>Observações:</strong> ${vehicle.observacoes || 'Nenhuma'}</p>
+            <div class="vehicle-actions">
+                <button onclick="editVehicle('${vehicle.id}')" class="edit-btn">Editar</button>
+                <button onclick="deleteVehicle('${vehicle.id}')" class="delete-btn">Excluir</button>
+            </div>
         `;
 
         vehiclesGrid.appendChild(vehicleCard);
     });
+}
+
+function editVehicle(vehicleId) {
+    // Buscar os dados do veículo
+    fetch(`http://localhost:8080/veiculos/${vehicleId}`)
+        .then(response => response.json())
+        .then(vehicle => {
+            // Preencher o formulário com os dados do veículo
+            document.getElementById('vehicleId').value = vehicle.id;
+            document.getElementById('vehicleBrand').value = vehicle.marca;
+            document.getElementById('vehicleModel').value = vehicle.modelo;
+            document.getElementById('vehicleYear').value = vehicle.ano_modelo;
+            document.getElementById('vehiclePlate').value = vehicle.placa;
+            document.getElementById('vehicleColor').value = vehicle.cor;
+            document.getElementById('vehicleKm').value = vehicle.quilometragem;
+            document.getElementById('vehicleRenavam').value = vehicle.renavan;
+            document.getElementById('vehicleStatus').value = vehicle.status;
+            document.getElementById('vehicleNotes').value = vehicle.observacoes;
+
+            // Alterar o título do modal
+            document.getElementById('modalTitle').textContent = 'Editar Veículo';
+
+            // Exibir o modal
+            showAddVehicleModal();
+        })
+        .catch(error => console.error('Erro ao buscar dados do veículo:', error));
+}
+
+function deleteVehicle(vehicleId) {
+    if (confirm('Tem certeza que deseja excluir este veículo?')) {
+        fetch(`http://localhost:8080/veiculos/${vehicleId}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Veículo excluído com sucesso!');
+                loadVehicles(); // Recarregar a lista de veículos
+            } else {
+                alert('Erro ao excluir veículo');
+            }
+        })
+        .catch(error => console.error('Erro ao excluir veículo:', error));
+    }
 }
 
 // Carrega a lista de veículos ao carregar a página

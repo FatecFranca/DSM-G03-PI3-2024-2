@@ -1,13 +1,24 @@
-import { Router } from 'express'
-import controller from '../controllers/usuarios.js'
+import { Router } from 'express';
+import controller from '../controllers/usuarios.js';
 
-const router = Router()
+const router = Router();
 
-router.post('/', controller.create)
-router.get('/', controller.retrieveAll)
-router.get('/:id', controller.retrieveOne)
-router.put('/:id', controller.update)
-router.delete('/:id', controller.delete)
-router.get('/login', controller.authenticate)
+// Rota para criar um novo usuário
+router.post('/', controller.create);
 
-export default router
+// Rota para autenticação (login)
+router.get('/login', controller.authenticate);
+
+// Rota para recuperar todos os usuários
+router.get('/', controller.retrieveAll);
+
+// Rota para recuperar um usuário específico
+router.get('/:id', controller.retrieveOne);
+
+// Rota para atualizar um usuário
+router.put('/:id', controller.update);
+
+// Rota para deletar um usuário
+router.delete('/:id', controller.delete);
+
+export default router;

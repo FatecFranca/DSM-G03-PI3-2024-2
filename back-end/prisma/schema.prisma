@@ -80,6 +80,7 @@ model Veiculo {
   cor             String
   ano_modelo      Int
   quilometragem   Int
+  status          String
   observacoes     String?
   servicos        Servico[]
   usuario_id      String?        @db.ObjectId

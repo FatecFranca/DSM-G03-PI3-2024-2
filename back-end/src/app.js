@@ -4,6 +4,7 @@ import logger from 'morgan'
 
 import indexRouter from './routes/index.js'
 import usersRouter from './routes/users.js'
+import cors from 'cors';
 
 const app = express()
 
@@ -15,6 +16,11 @@ app.use(cookieParser())
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
 
+app.use(cors({
+    origin: 'http://127.0.0.1:5500', // Altere para a origem correta do seu front-end
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type']
+}));
 /*************** ROTAS *******************/
 
 import usuariosRouter from './routes/usuarios.js'

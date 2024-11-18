@@ -1,35 +1,37 @@
-document.getElementById('loginForm').addEventListener('submit', function(event) {
+document.getElementById('loginForm').addEventListener('submit', async function(event) {
     event.preventDefault();
-    
+
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const emailError = document.getElementById('emailError');
-    const passwordError = document.getElementById('passwordError');
-    
-    // Reset error messages
-    emailError.style.display = 'none';
-    passwordError.style.display = 'none';
-    
-    let isValid = true;
 
-    // Validate email
-    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-        emailError.textContent = 'Por favor, insira um e-mail válido';
-        emailError.style.display = 'block';
-        isValid = false;
-    }
+    // Construir a URL com os parâmetros de query
+    const url = new URL('http://localhost:8080/usuarios/');
+    url.searchParams.append('email', email);
+    url.searchParams.append('senha', password);
 
-    // Validate password
-    if (password.length < 6) {
-        passwordError.textContent = 'A senha deve ter pelo menos 6 caracteres';
-        passwordError.style.display = 'block';
-        isValid = false;
-    }
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
 
-    if (isValid) {
-        // Aqui você pode adicionar a lógica de autenticação
-        alert('Login realizado com sucesso!');
-        // Exemplo de redirecionamento:
-        // window.location.href = 'dashboard.html';
+        if (response.ok) {
+            const result = await response.json();
+            const userId = result.id;
+
+            // Armazenar o ID do usuário no localStorage
+            localStorage.setItem('userId', userId);
+
+            alert('Login bem-sucedido!');
+            window.location.href = 'dashboard.html'; // Redirecionar para a página principal
+        } else {
+            const errorData = await response.json();
+            alert('Erro ao fazer login: ' + (errorData.message || 'Erro desconhecido'));
+        }
+    } catch (error) {
+        console.error('Erro ao enviar dados:', error);
+        alert('Erro ao conectar ao servidor.');
     }
 });

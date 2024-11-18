@@ -15,16 +15,17 @@ datasource db {
 model Usuario {
   id              String       @id @default(auto()) @map("_id") @db.ObjectId
   nome            String
-  cpf             String       @unique
+  cpf             String?       @unique
   data_nascimento DateTime?
   email           String       @unique
-  logradouro      String
-  num_casa        String
+  logradouro      String?
+  num_casa        String?
   complemento     String?
-  bairro          String
-  municipio       String
-  uf              String
-  cep             String
+  bairro          String?
+  municipio       String?
+  uf              String?
+  cep             String?
+  senha           String?
   celular         String
   veiculo         Veiculo[]
 }

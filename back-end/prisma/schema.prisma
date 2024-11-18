@@ -76,8 +76,11 @@ model Veiculo {
   renavan         Int           @unique
   marca           String
   modelo          String
+  placa           String
+  cor             String
   ano_modelo      Int
   quilometragem   Int
+  observacoes     String?
   servicos        Servico[]
   usuario_id      String?        @db.ObjectId
   usuario         Usuario?       @relation(fields: [usuario_id], references: [id])

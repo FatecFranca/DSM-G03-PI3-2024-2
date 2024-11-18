@@ -1,4 +1,5 @@
 import prisma from '../database/client.js'
+import bcrypt from 'bcrypt';
 
 const controller = {}     // Objeto vazio
 
@@ -122,5 +123,28 @@ controller.delete = async function(req, res) {
     }
   }
 }
+// Função para autenticação de usuário
+controller.authenticate = async function(req, res) {
+  try {
+    const { email, senha } = req.query;
 
+    // Verifica se o usuário existe
+    const usuario = await prisma.usuario.findUnique({ where: { email } });
+    if (!usuario) {
+      return res.status(401).send({ message: 'E-mail ou senha incorretos' });
+    }
+
+    // Verifica se a senha está correta
+    const isPasswordValid = await bcrypt.compare(senha, usuario.senha);
+    if (!isPasswordValid) {
+      return res.status(401).send({ message: 'E-mail ou senha incorretos' });
+    }
+
+    // Envia o ID do usuário
+    res.send({ id: usuario.id });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Erro interno do servidor' });
+  }
+}
 export default controller

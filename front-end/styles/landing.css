@@ -27,19 +27,41 @@ body {
 }
 
 /* Logo */
-.logo {
+.logo i {
     display: flex;
     align-items: center;
-    gap: 0;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #e6c598;
+    gap: 0.5rem; 
 }
 
-.logo i {
-    font-size: 2.2rem;
-    color: #e6c598; 
+.logo-img {
+    height: 60px; /* Ajuste a altura conforme necessário */
+    width: auto; /* Mantém a proporção da imagem */
 }
+
+.logo-img-footer {
+    height: 120px; /* Ajuste a altura conforme necessário */
+    width: auto; /* Mantém a proporção da imagem */
+}
+
+.image-container {
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh; /* Ajusta a altura conforme necessário */
+    margin: 2rem auto; /* Espaçamento acima e abaixo */
+    text-align: center;
+}
+
+.image-container img {
+    background-color: #000;
+    max-width: 100%; /* Impede que a imagem ultrapasse a largura da div */
+    max-height: 100%; /* Ajusta a altura máxima */
+    width: 50%; /* Mantém a proporção da imagem */
+    height: auto;
+    object-fit: contain; /* Mantém a imagem dentro dos limites sem distorção */
+}
+
 
 /* Navigation Menu */
 .navbar div {

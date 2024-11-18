@@ -37,18 +37,15 @@ body {
 }
 
 /* Logo */
-.logo {
+.logo i {
     display: flex;
     align-items: center;
-    gap: 0;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #e6c598;
+    gap: 0.5rem; 
 }
 
-.logo i {
-    font-size: 2.2rem;
-    color: #e6c598; 
+.logo-img {
+    height: 60px; /* Ajuste a altura conforme necessário */
+    width: auto; /* Mantém a proporção da imagem */
 }
 
 /* Navigation Menu */

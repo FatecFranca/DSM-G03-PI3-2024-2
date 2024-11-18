@@ -1,150 +1,176 @@
-import prisma from '../database/client.js'
+import prisma from '../database/client.js';
 import bcrypt from 'bcrypt';
 
-const controller = {}     // Objeto vazio
+const controller = {};
 
 controller.create = async function(req, res) {
   try {
-    /*
-      Conecta-se ao BD e envia uma instrução de
-      criação de um novo documento, com os dados
-      que estão dentro de req.body
-    */
-    await prisma.usuario.create({ data: req.body })
+    // Extrair os dados do corpo da requisição
+    const { nome, cpf, data_nascimento, email, logradouro, num_casa, complemento, 
+            bairro, municipio, uf, cep, senha, celular } = req.body;
 
-    // Envia uma resposta de sucesso ao front-end
-    // HTTP 201: Created
-    res.status(201).end()
-  }
-  catch(error) {
-    // Deu errado: exibe o erro no console do back-end
-    console.error(error)
+    // Hashear a senha
+    const senhaHash = await bcrypt.hash(senha, 10);
 
-    // Envia o erro ao front-end, com status 500
-    // HTTP 500: Internal Server Error
-    res.status(500).send(error)
+    // Criar o usuário com a senha hasheada
+    const novoUsuario = await prisma.usuario.create({
+      data: {
+        nome,
+        cpf,
+        data_nascimento: data_nascimento ? new Date(data_nascimento) : null,
+        email,
+        logradouro,
+        num_casa,
+        complemento,
+        bairro,
+        municipio,
+        uf,
+        cep,
+        senha: senhaHash, // Usar a senha hasheada
+        celular
+      }
+    });
+
+    // Responder com sucesso, mas sem enviar a senha de volta
+    res.status(201).json({
+      id: novoUsuario.id,
+      nome: novoUsuario.nome,
+      email: novoUsuario.email
+      // Adicione outros campos que você queira retornar, exceto a senha
+    });
+  } catch (error) {
+    console.error('Erro ao criar usuário:', error);
+    if (error.code === 'P2002') {
+      res.status(400).json({ message: 'Email ou CPF já cadastrado.' });
+    } else {
+      res.status(500).json({ message: 'Erro interno do servidor ao criar usuário.' });
+    }
   }
-}
+};
 
 controller.retrieveAll = async function(req, res) {
   try {
-    // Manda buscar os dados no servidor
-    const result = await prisma.usuario.findMany({
-      orderBy: [ { nome: 'asc' } ]
-    })
-
-    // Retorna os dados obtidos ao cliente com o status
-    // HTTP 200: OK (implícito)
-    res.send(result)
+    const result = await prisma.usuario.findMany({ 
+      orderBy: [{ nome: 'asc' }],
+      select: {
+        id: true,
+        nome: true,
+        email: true,
+        cpf: true,
+        celular: true
+        // Adicione outros campos que você quer retornar, exceto a senha
+      }
+    });
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro interno do servidor ao buscar usuários.' });
   }
-  catch(error) {
-    // Deu errado: exibe o erro no console do back-end
-    console.error(error)
-
-    // Envia o erro ao front-end, com status 500
-    // HTTP 500: Internal Server Error
-    res.status(500).send(error)
-  }
-}
+};
 
 controller.retrieveOne = async function(req, res) {
   try {
-    // Manda buscar o documento no servidor usando
-    // como critério de busca um id informado no
-    // parâmetro da requisição
-    const result = await prisma.usuario.findUnique({
-      where: { id: req.params.id }
-    })
-
-    // Encontrou o documento ~> retorna HTTP 200: OK (implícito)
-    if(result) res.send(result)
-    // Não encontrou o documento ~> retorna HTTP 404: Not Found
-    else res.status(404).end()
+    const result = await prisma.usuario.findUnique({ 
+      where: { id: req.params.id },
+      select: {
+        id: true,
+        nome: true,
+        email: true,
+        cpf: true,
+        data_nascimento: true,
+        logradouro: true,
+        num_casa: true,
+        complemento: true,
+        bairro: true,
+        municipio: true,
+        uf: true,
+        cep: true,
+        celular: true
+        // Não incluímos a senha aqui
+      }
+    });
+    if (result) res.json(result);
+    else res.status(404).json({ message: 'Usuário não encontrado' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro interno do servidor ao buscar usuário.' });
   }
-  catch(error) {
-    // Deu errado: exibe o erro no console do back-end
-    console.error(error)
-
-    // Envia o erro ao front-end, com status 500
-    // HTTP 500: Internal Server Error
-    res.status(500).send(error)
-  }
-}
+};
 
 controller.update = async function(req, res) {
   try {
-    // Busca o documento pelo id passado como parâmetro e, caso
-    // o documento seja encontrado, atualiza-o com as informações
-    // passadas em req.body
-    const result = await prisma.usuario.update({
-      where: { id: req.params.id },
-      data: req.body
-    })
+    const { senha, ...dadosAtualizacao } = req.body;
+    
+    // Se uma nova senha for fornecida, hashear antes de atualizar
+    if (senha) {
+      dadosAtualizacao.senha = await bcrypt.hash(senha, 10);
+    }
 
-    // Encontrou e atualizou ~> retorna HTTP 204: No Content
-    if(result) res.status(204).end()
-    // Não encontrou (e não atualizou) ~> retorna HTTP 404: Not Found
-    else res.status(404).end()
+    const result = await prisma.usuario.update({ 
+      where: { id: req.params.id }, 
+      data: dadosAtualizacao 
+    });
+    
+    if (result) res.status(204).end();
+    else res.status(404).json({ message: 'Usuário não encontrado' });
+  } catch (error) {
+    console.error(error);
+    if (error.code === 'P2002') {
+      res.status(400).json({ message: 'Email ou CPF já em uso por outro usuário.' });
+    } else {
+      res.status(500).json({ message: 'Erro interno do servidor ao atualizar usuário.' });
+    }
   }
-  catch(error) {
-    // Deu errado: exibe o erro no console do back-end
-    console.error(error)
-
-    // Envia o erro ao front-end, com status 500
-    // HTTP 500: Internal Server Error
-    res.status(500).send(error)
-  }
-}
+};
 
 controller.delete = async function(req, res) {
   try {
-    // Busca o documento a ser excluído pelo id passado
-    // como parâmetro e efetua a exclusão caso encontrado
-    await prisma.usuario.delete({
-      where: { id: req.params.id }
-    })
-
-    // Encontrou e excluiu ~> HTTP 204: No Content
-    res.status(204).end()
-
-  }
-  catch(error) {
-    if(error?.code === 'P2025') {   // Código erro de exclusão no Prisma
-      // Não encontrou e não excluiu ~> HTTP 404: Not Found
-      res.status(404).end()
-    }
-    else {
-      // Outros tipos de erro
-      console.error(error)
-
-      // Envia o erro ao front-end, com status 500
-      // HTTP 500: Internal Server Error
-      res.status(500).send(error)
+    await prisma.usuario.delete({ where: { id: req.params.id } });
+    res.status(204).end();
+  } catch (error) {
+    if (error.code === 'P2025') {
+      res.status(404).json({ message: 'Usuário não encontrado' });
+    } else {
+      console.error(error);
+      res.status(500).json({ message: 'Erro interno do servidor ao deletar usuário.' });
     }
   }
-}
-// Função para autenticação de usuário
+};
+
 controller.authenticate = async function(req, res) {
   try {
     const { email, senha } = req.query;
+    console.log('Tentativa de login para:', email);
 
     // Verifica se o usuário existe
     const usuario = await prisma.usuario.findUnique({ where: { email } });
+    console.log('Usuário encontrado:', usuario ? 'Sim' : 'Não');
+
     if (!usuario) {
-      return res.status(401).send({ message: 'E-mail ou senha incorretos' });
+      console.log('Usuário não encontrado');
+      return res.status(401).json({ message: 'E-mail ou senha incorretos' });
     }
+
+    console.log('Senha armazenada (hash):', usuario.senha);
+    console.log('Senha fornecida:', senha);
 
     // Verifica se a senha está correta
     const isPasswordValid = await bcrypt.compare(senha, usuario.senha);
+    console.log('Senha válida:', isPasswordValid ? 'Sim' : 'Não');
+
     if (!isPasswordValid) {
-      return res.status(401).send({ message: 'E-mail ou senha incorretos' });
+      console.log('Senha incorreta');
+      return res.status(401).json({ message: 'E-mail ou senha incorretos' });
     }
 
+    console.log('Usuário autenticado:', usuario.id);
+
     // Envia o ID do usuário
-    res.send({ id: usuario.id });
+    res.json({ id: usuario.id, message: 'Login bem-sucedido' });
   } catch (error) {
-    console.error(error);
-    res.status(500).send({ message: 'Erro interno do servidor' });
+    console.error('Erro durante a autenticação:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
   }
-}
-export default controller
+};
+
+export default controller;

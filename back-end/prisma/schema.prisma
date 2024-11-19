@@ -59,7 +59,7 @@ model TipoServico {
   observacoes     String
   oficina_id      String        @db.ObjectId
   oficina         Oficina       @relation(fields: [oficina_id], references: [id])
-  servicos        Servico[]
+  servicos        Servico[]     @relation("ServicoToTipoServico")
 }
 
 model Servico {
@@ -68,7 +68,7 @@ model Servico {
   kmServ          Int
   data_serv       DateTime      @default(now())
   tipoServico_id  String        @db.ObjectId  
-  tipo_servico    TipoServico   @relation(fields: [tipoServico_id], references: [id])
+  tipo_servico    TipoServico   @relation("ServicoToTipoServico", fields: [tipoServico_id], references: [id], onDelete: Cascade)
   veiculo_id      String        @db.ObjectId
   veiculo         Veiculo       @relation(fields: [veiculo_id], references: [id])
 

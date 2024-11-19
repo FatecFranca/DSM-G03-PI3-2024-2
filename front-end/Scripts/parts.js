@@ -41,7 +41,72 @@ async function loadServices() {
     }
 }
 
-// Função para criar os cards de serviços e peças
+// Função para salvar ou atualizar um serviço/peça
+let isSubmitting = false;
+
+async function saveService(event) {
+    event.preventDefault();
+
+    if (isSubmitting) {
+        console.log('Já está submetendo. Ignorando clique adicional.');
+        return;
+    }
+
+    isSubmitting = true;
+
+    const form = event.target;
+    const formData = new FormData(form);
+    const isEditing = form.dataset.mode === 'edit';
+
+    const serviceData = {
+        nome: formData.get('name'),
+        categoria: formData.get('category'),
+        preco: parseFloat(formData.get('price')),
+        diasValidade: parseInt(formData.get('diasValidade')),
+        kmValidade: parseInt(formData.get('kmValidade')),
+        status: formData.get('status'),
+        observacoes: formData.get('observations'),
+        veiculo_id: formData.get('vehicle'),
+        kmServ: parseInt(formData.get('kmServ')) || 0,
+        data_serv: formData.get('dataServico'),
+        oficina_id: '672d415f453530ff2c2e4a4a'
+    };
+
+    console.log('Dados a serem enviados:', serviceData);
+
+    try {
+        const url = isEditing 
+            ? `http://localhost:8080/tipoServicos/${form.dataset.editId}`
+            : 'http://localhost:8080/tipoServicos';
+
+        const method = isEditing ? 'PUT' : 'POST';
+
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(serviceData),
+        });
+
+        const result = await response.json();
+        console.log('Resposta do servidor:', result);
+
+        if (response.ok) {
+            closeModal();
+            await loadServices();
+            showToast(isEditing ? 'Serviço/Peça atualizado com sucesso!' : 'Serviço/Peça adicionado com sucesso!');
+        } else {
+            throw new Error(result.error || 'Erro ao processar serviço/peça');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        showToast(error.message);
+    } finally {
+        isSubmitting = false;
+    }
+}
+
 function createServiceCards(services = servicesData) {
     const grid = document.querySelector('.parts-grid');
     grid.innerHTML = '';
@@ -52,13 +117,17 @@ function createServiceCards(services = servicesData) {
         card.innerHTML = `
             <div class="part-header">
                 <h3>${service.nome}</h3>
-                <span class="category-badge">${service.categoria === 'servico' ? 'Serviço' : 'Peça'}</span>
+                <span class="category-badge">${service.categoria}</span>
             </div>
             <div class="part-info">
                 <p><i class="fas fa-dollar-sign"></i> Preço: R$ ${service.preco.toFixed(2)}</p>
                 <p><i class="fas fa-calendar"></i> Validade: ${service.diasValidade} dias</p>
                 <p><i class="fas fa-road"></i> Validade KM: ${service.kmValidade} km</p>
+                <p><i class="fas fa-info-circle"></i> Status: ${service.status}</p>
                 ${service.observacoes ? `<p><i class="fas fa-comment"></i> ${service.observacoes}</p>` : ''}
+                ${service.servicos && service.servicos.length > 0 ? `
+                    <p><i class="fas fa-wrench"></i> Último serviço: ${new Date(service.servicos[0].data_serv).toLocaleDateString()} - ${service.servicos[0].kmServ || 'N/A'} km</p>
+                ` : ''}
             </div>
             <div class="part-actions">
                 <button onclick="showEditModal('${service.id}')" class="edit-btn">
@@ -108,10 +177,14 @@ async function showEditModal(id) {
             form.elements['diasValidade'].value = service.diasValidade;
             form.elements['kmValidade'].value = service.kmValidade;
             form.elements['observations'].value = service.observacoes || '';
+            form.elements['status'].value = service.status;
             
-            // Se houver um veículo associado, selecione-o
+            // Se houver um serviço associado, preencha os campos relacionados
             if (service.servicos && service.servicos.length > 0) {
-                form.elements['vehicle'].value = service.servicos[0].veiculo_id;
+                const lastService = service.servicos[0];
+                form.elements['kmServ'].value = lastService.kmServ;
+                form.elements['dataServico'].value = new Date(lastService.data_serv).toISOString().split('T')[0];
+                form.elements['vehicle'].value = lastService.veiculo_id;
             }
             
             modal.style.display = 'block';
@@ -129,51 +202,6 @@ function closeModal() {
     const form = document.getElementById('partForm');
     form.reset();
     modal.style.display = 'none';
-}
-
-// Função para salvar ou atualizar um serviço/peça
-async function saveService(formData) {
-    const form = document.getElementById('partForm');
-    const isEdit = form.dataset.mode === 'edit';
-    const serviceId = isEdit ? form.dataset.editId : null;
-    
-    const serviceData = {
-        nome: formData.get('name'),
-        categoria: formData.get('category'),
-        preco: parseFloat(formData.get('price')),
-        diasValidade: parseInt(formData.get('diasValidade')),
-        kmValidade: parseInt(formData.get('kmValidade')),
-        observacoes: formData.get('observations'),
-        oficina_id: "64e90af32be3e7ea9a68c3cb", // Substitua pelo ID real da oficina
-        veiculo_id: formData.get('vehicle')
-    };
-
-    try {
-        const url = isEdit 
-            ? `http://localhost:8080/tipoServicos/${serviceId}`
-            : 'http://localhost:8080/tipoServicos';
-        
-        const method = isEdit ? 'PUT' : 'POST';
-
-        const response = await fetch(url, {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(serviceData),
-        });
-
-        if (response.ok) {
-            closeModal();
-            loadServices();
-            showToast(isEdit ? 'Serviço atualizado com sucesso!' : 'Serviço adicionado com sucesso!');
-        } else {
-            throw new Error(isEdit ? 'Erro ao atualizar serviço' : 'Erro ao adicionar serviço');
-        }
-    } catch (error) {
-        console.error('Erro:', error);
-        showToast(error.message);
-    }
 }
 
 // Função para confirmar e deletar um serviço/peça
@@ -216,20 +244,36 @@ function showToast(message) {
 }
 
 // Função para filtrar serviços e peças
-function filterServices() {
+async function filterServices() {
     const searchTerm = document.querySelector('.search-box input').value.toLowerCase();
     const vehicleFilter = document.getElementById('vehicleFilter').value;
     const categoryFilter = document.getElementById('categoryFilter').value;
 
-    const filteredServices = servicesData.filter(service => {
-        const matchSearch = service.nome.toLowerCase().includes(searchTerm);
-        const matchCategory = !categoryFilter || service.categoria === categoryFilter;
-        const matchVehicle = !vehicleFilter || (service.servicos && service.servicos.some(s => s.veiculo_id === vehicleFilter));
+    try {
+        let url = 'http://localhost:8080/tipoServicos';
+        
+        if (searchTerm) {
+            url = `http://localhost:8080/tipoServicos/search?query=${encodeURIComponent(searchTerm)}`;
+        }
 
-        return matchSearch && matchCategory && matchVehicle;
-    });
+        const response = await fetch(url);
+        if (response.ok) {
+            let services = await response.json();
 
-    createServiceCards(filteredServices);
+            // Aplicar filtros adicionais no lado do cliente
+            services = services.filter(service => {
+                const matchCategory = !categoryFilter || service.categoria.toLowerCase() === categoryFilter.toLowerCase();
+                const matchVehicle = !vehicleFilter || (service.servicos && service.servicos.some(s => s.veiculo_id === vehicleFilter));
+                return matchCategory && matchVehicle;
+            });
+
+            createServiceCards(services);
+        } else {
+            console.error('Erro ao buscar serviços:', await response.text());
+        }
+    } catch (error) {
+        console.error('Erro ao conectar ao servidor:', error);
+    }
 }
 
 // Event Listeners
@@ -240,15 +284,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Listener para o formulário
     const form = document.getElementById('partForm');
-    form?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        saveService(formData);
-    });
+    if (form) {
+        form.addEventListener('submit', saveService);
+    }
     
-    // Listener para busca
+    // Listener para busca com debounce
     const searchInput = document.querySelector('.search-box input');
-    searchInput?.addEventListener('input', filterServices);
+    if (searchInput) {
+        const debouncedFilterServices = debounce(filterServices, 300);
+        searchInput.addEventListener('input', debouncedFilterServices);
+    }
     
     // Listeners para filtros
     const filters = document.querySelectorAll('select[id$="Filter"]');

@@ -70,7 +70,7 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">×</span>
             <h2>Adicionar Novo Serviço/Peça</h2>
-            <form id="partForm">
+            <form id="partForm" onsubmit="saveService(event)">
                 <div class="form-group">
                     <label for="name">Nome do Serviço/Peça</label>
                     <input type="text" id="name" name="name" required>
@@ -79,9 +79,9 @@
                 <div class="form-group">
                     <label for="category">Categoria</label>
                     <select id="category" name="category" required>
-                        <option value="">Selecione uma categoria</option>
-                        <option value="servico">Serviço</option>
-                        <option value="peca">Peça</option>
+                        <option value="motor">Motor</option>
+                        <option value="freio">Freio</option>
+                        <option value="suspensao">Suspensão</option>
                     </select>
                 </div>
     
@@ -107,6 +107,23 @@
                     </div>
                 </div>
     
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status" required>
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
+                    </select>
+                </div>
+    
+                <div class="form-group">
+                    <label for="kmServ">Quilometragem do Serviço</label>
+                    <input type="number" id="kmServ" name="kmServ" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="dataServico">Data do Serviço</label>
+                    <input type="date" id="dataServico" name="dataServico" required>
+                </div>
+                
                 <div class="form-group">
                     <label for="observations">Observações</label>
                     <textarea id="observations" name="observations"></textarea>

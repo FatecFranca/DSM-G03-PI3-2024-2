@@ -78,6 +78,7 @@ async function loadVehicles() {
     const userId = localStorage.getItem('userId');
     if (!userId) {
         console.error('Usuário não está logado');
+        document.getElementById('errorMessage').textContent = 'Usuário não está logado. Por favor, faça login novamente.';
         return;
     }
 
@@ -91,12 +92,16 @@ async function loadVehicles() {
 
         if (response.ok) {
             const vehicles = await response.json();
+            console.log('Veículos recebidos:', vehicles);
             displayVehicles(vehicles);
         } else {
-            console.error('Erro ao carregar veículos:', await response.text());
+            const errorText = await response.text();
+            console.error('Erro ao carregar veículos:', errorText);
+            document.getElementById('errorMessage').textContent = 'Erro ao carregar veículos. Por favor, tente novamente.';
         }
     } catch (error) {
         console.error('Erro ao conectar ao servidor:', error);
+        document.getElementById('errorMessage').textContent = 'Erro de conexão. Por favor, verifique sua internet e tente novamente.';
     }
 }
 

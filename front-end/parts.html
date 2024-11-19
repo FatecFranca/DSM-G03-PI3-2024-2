@@ -14,7 +14,7 @@
         </div>
      
         <div>
-            <a href="parts.html"><i class="fas fa-tools"></i> Peças</a>
+            <a href="parts.html"><i class="fas fa-tools"></i> Peças e Serviços</a>
             <a href="vehicles.html" ><i class="fas fa-car"></i> Veículos</a>
             <a href="historico.html"><i class="fas fa-history"></i> Histórico</a>
         </div>
@@ -28,9 +28,9 @@
     <!-- Conteúdo Principal -->
     <main class="container">
         <div class="page-header">
-            <h1>Controle de Peças</h1>
+            <h1>Controle de Peças e Serviços</h1>
             <button onclick="showAddModal()" class="add-btn">
-                <i class="fas fa-plus"></i> Nova Peça
+                <i class="fas fa-plus"></i> Novo
             </button>
         </div>
 
@@ -69,48 +69,49 @@
     <div id="partModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">×</span>
-            <h2>Adicionar Nova Peça</h2>
+            <h2>Adicionar Novo Serviço/Peça</h2>
             <form id="partForm">
                 <div class="form-group">
-                    <label for="name">Nome da Peça</label>
+                    <label for="name">Nome do Serviço/Peça</label>
                     <input type="text" id="name" name="name" required>
                 </div>
-
+    
                 <div class="form-group">
                     <label for="category">Categoria</label>
                     <select id="category" name="category" required>
                         <option value="">Selecione uma categoria</option>
-                        <option value="motor">Motor</option>
-                        <option value="freio">Freio</option>
-                        <option value="suspensao">Suspensão</option>
+                        <option value="servico">Serviço</option>
+                        <option value="peca">Peça</option>
                     </select>
                 </div>
-
+    
                 <div class="form-group">
                     <label for="vehicle">Veículo</label>
                     <select id="vehicle" name="vehicle" required>
-                        <option value="">Selecione um veículo</option>
-                        <option value="Carro 1">Carro 1</option>
-                        <option value="Carro 2">Carro 2</option>
+                        <!-- Será preenchido dinamicamente -->
                     </select>
                 </div>
-
+    
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="quantity">Quantidade</label>
-                        <input type="number" id="quantity" name="quantity" min="1" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="price">Preço Unitário</label>
+                        <label for="price">Preço</label>
                         <input type="number" id="price" name="price" min="0" step="0.01" required>
                     </div>
+                    <div class="form-group">
+                        <label for="diasValidade">Dias de Validade</label>
+                        <input type="number" id="diasValidade" name="diasValidade" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kmValidade">KM de Validade</label>
+                        <input type="number" id="kmValidade" name="kmValidade" min="0" required>
+                    </div>
                 </div>
-
+    
                 <div class="form-group">
                     <label for="observations">Observações</label>
                     <textarea id="observations" name="observations"></textarea>
                 </div>
-
+    
                 <div class="form-buttons">
                     <button type="button" onclick="closeModal()">Cancelar</button>
                     <button type="submit" class="submit-btn">Salvar</button>

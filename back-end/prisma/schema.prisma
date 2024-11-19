@@ -54,6 +54,9 @@ model TipoServico {
   diasValidade    Int
   kmValidade      Int
   preco           Float
+  categoria       String
+  status          String
+  observacoes     String
   oficina_id      String        @db.ObjectId
   oficina         Oficina       @relation(fields: [oficina_id], references: [id])
   servicos        Servico[]
@@ -62,6 +65,7 @@ model TipoServico {
 model Servico {
   id              String        @id @default(auto()) @map("_id") @db.ObjectId
   num_serv        Int           
+  kmServ          Int
   data_serv       DateTime      @default(now())
   tipoServico_id  String        @db.ObjectId  
   tipo_servico    TipoServico   @relation(fields: [tipoServico_id], references: [id])

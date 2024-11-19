@@ -1,6 +1,8 @@
 import express, { json, urlencoded } from 'express'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
+import 'dotenv/config';
+console.log('DATABASE_URL:', process.env.DATABASE_URL);
 
 import indexRouter from './routes/index.js'
 import usersRouter from './routes/users.js'

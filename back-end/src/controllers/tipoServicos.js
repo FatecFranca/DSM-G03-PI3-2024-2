@@ -1,133 +1,153 @@
 import prisma from '../database/client.js'
-import { includeRelations } from '../lib/utils.js'
 
-const controller = {}     // Objeto vazio
+const OFICINA_ID = "672d415f453530ff2c2e4a4a"; // ID da oficina pré-cadastrada
+
+const controller = {}
 
 controller.create = async function(req, res) {
   try {
-    /*
-      Conecta-se ao BD e envia uma instrução de
-      criação de um novo documento, com os dados
-      que estão dentro de req.body
-    */
-    await prisma.tipoServico.create({ data: req.body })
+    const { veiculo_id, ...tipoServicoData } = req.body;
+    
+    const createdTipoServico = await prisma.tipoServico.create({
+      data: {
+        ...tipoServicoData,
+        oficina_id: OFICINA_ID, // Sempre usa a oficina pré-cadastrada
+        servicos: {
+          create: {
+            veiculo: { connect: { id: veiculo_id } },
+            num_serv: 1, // Você pode querer gerar este número de forma mais sofisticada
+            data_serv: new Date()
+          }
+        }
+      },
+      include: {
+        servicos: {
+          include: {
+            veiculo: true
+          }
+        },
+        oficina: true
+      }
+    });
 
-    // Envia uma resposta de sucesso ao front-end
-    // HTTP 201: Created
-    res.status(201).end()
+    res.status(201).json(createdTipoServico);
   }
   catch(error) {
-    // Deu errado: exibe o erro no console do back-end
-    console.error(error)
-
-    // Envia o erro ao front-end, com status 500
-    // HTTP 500: Internal Server Error
-    res.status(500).send(error)
+    console.error('Erro ao criar tipo de serviço:', error);
+    res.status(500).json({ error: 'Erro interno do servidor ao criar tipo de serviço' });
   }
 }
 
 controller.retrieveAll = async function(req, res) {
   try {
-
-    const include = includeRelations(req.query)
-
-    // Manda buscar os dados no servidor
     const result = await prisma.tipoServico.findMany({
-      include,
-      orderBy: [ { nome: 'asc' } ]
-    })
+      where: { oficina_id: OFICINA_ID },
+      include: {
+        servicos: {
+          include: {
+            veiculo: true
+          }
+        },
+        oficina: true
+      },
+      orderBy: { nome: 'asc' }
+    });
 
-    // Retorna os dados obtidos ao cliente com o status
-    // HTTP 200: OK (implícito)
-    res.send(result)
+    res.json(result);
   }
   catch(error) {
-    // Deu errado: exibe o erro no console do back-end
-    console.error(error)
-
-    // Envia o erro ao front-end, com status 500
-    // HTTP 500: Internal Server Error
-    res.status(500).send(error)
+    console.error('Erro ao recuperar todos os tipos de serviço:', error);
+    res.status(500).json({ error: 'Erro interno do servidor ao recuperar tipos de serviço' });
   }
 }
 
 controller.retrieveOne = async function(req, res) {
   try {
-    
-    const include = includeRelations(req.query)
-
-    // Manda buscar o documento no servidor usando
-    // como critério de busca um id informado no
-    // parâmetro da requisição
     const result = await prisma.tipoServico.findUnique({
-      where: { id: req.params.id },
-      include
-    })
+      where: { 
+        id: req.params.id,
+        oficina_id: OFICINA_ID
+      },
+      include: {
+        servicos: {
+          include: {
+            veiculo: true
+          }
+        },
+        oficina: true
+      }
+    });
 
-    // Encontrou o documento ~> retorna HTTP 200: OK (implícito)
-    if(result) res.send(result)
-    // Não encontrou o documento ~> retorna HTTP 404: Not Found
-    else res.status(404).end()
+    if(result) {
+      res.json(result);
+    } else {
+      res.status(404).json({ error: 'Tipo de serviço não encontrado' });
+    }
   }
   catch(error) {
-    // Deu errado: exibe o erro no console do back-end
-    console.error(error)
-
-    // Envia o erro ao front-end, com status 500
-    // HTTP 500: Internal Server Error
-    res.status(500).send(error)
+    console.error('Erro ao recuperar tipo de serviço:', error);
+    res.status(500).json({ error: 'Erro interno do servidor ao recuperar tipo de serviço' });
   }
 }
 
 controller.update = async function(req, res) {
   try {
-    // Busca o documento pelo id passado como parâmetro e, caso
-    // o documento seja encontrado, atualiza-o com as informações
-    // passadas em req.body
-    const result = await prisma.tipoServico.update({
-      where: { id: req.params.id },
-      data: req.body
-    })
+    const { veiculo_id, ...tipoServicoData } = req.body;
 
-    // Encontrou e atualizou ~> retorna HTTP 204: No Content
-    if(result) res.status(204).end()
-    // Não encontrou (e não atualizou) ~> retorna HTTP 404: Not Found
-    else res.status(404).end()
+    const updatedTipoServico = await prisma.tipoServico.update({
+      where: { 
+        id: req.params.id,
+        oficina_id: OFICINA_ID
+      },
+      data: {
+        ...tipoServicoData,
+        servicos: {
+          updateMany: {
+            where: { tipoServico_id: req.params.id },
+            data: { veiculo_id: veiculo_id }
+          }
+        }
+      },
+      include: {
+        servicos: {
+          include: {
+            veiculo: true
+          }
+        },
+        oficina: true
+      }
+    });
+
+    if(updatedTipoServico) {
+      res.json(updatedTipoServico);
+    } else {
+      res.status(404).json({ error: 'Tipo de serviço não encontrado' });
+    }
   }
   catch(error) {
-    // Deu errado: exibe o erro no console do back-end
-    console.error(error)
-
-    // Envia o erro ao front-end, com status 500
-    // HTTP 500: Internal Server Error
-    res.status(500).send(error)
+    console.error('Erro ao atualizar tipo de serviço:', error);
+    res.status(500).json({ error: 'Erro interno do servidor ao atualizar tipo de serviço' });
   }
 }
 
 controller.delete = async function(req, res) {
   try {
-    // Busca o documento a ser excluído pelo id passado
-    // como parâmetro e efetua a exclusão caso encontrado
     await prisma.tipoServico.delete({
-      where: { id: req.params.id }
-    })
+      where: { 
+        id: req.params.id,
+        oficina_id: OFICINA_ID
+      }
+    });
 
-    // Encontrou e excluiu ~> HTTP 204: No Content
-    res.status(204).end()
-
+    res.status(204).end();
   }
   catch(error) {
-    if(error?.code === 'P2025') {   // Código erro de exclusão no Prisma
-      // Não encontrou e não excluiu ~> HTTP 404: Not Found
-      res.status(404).end()
+    if(error?.code === 'P2025') {
+      res.status(404).json({ error: 'Tipo de serviço não encontrado' });
     }
     else {
-      // Outros tipos de erro
-      console.error(error)
-
-      // Envia o erro ao front-end, com status 500
-      // HTTP 500: Internal Server Error
-      res.status(500).send(error)
+      console.error('Erro ao excluir tipo de serviço:', error);
+      res.status(500).json({ error: 'Erro interno do servidor ao excluir tipo de serviço' });
     }
   }
 }

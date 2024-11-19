@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import 'dotenv/config';
 
 const prisma = new PrismaClient({
   // Habilita a exibição dos comandos de BD no console

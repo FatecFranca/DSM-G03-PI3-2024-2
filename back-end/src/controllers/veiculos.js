@@ -59,11 +59,16 @@ controller.create = async function(req, res) {
 
 controller.retrieveAll = async function(req, res) {
   try {
+    const userId = req.query.usuario_id;
+    if (!userId) {
+      return res.status(400).send('usuario_id é obrigatório');
+    }
 
     const include = includeRelations(req.query)
 
     // Manda buscar os dados no servidor
     const result = await prisma.veiculo.findMany({
+      where: { usuario_id: userId },
       orderBy: [ { modelo: 'asc' } ],
       include
     })
@@ -73,15 +78,10 @@ controller.retrieveAll = async function(req, res) {
     res.send(result)
   }
   catch(error) {
-    // Deu errado: exibe o erro no console do back-end
-    console.error(error)
-
-    // Envia o erro ao front-end, com status 500
-    // HTTP 500: Internal Server Error
-    res.status(500).send(error)
+    console.error('Erro ao buscar veículos:', error);
+    res.status(500).send(error.message || 'Erro interno do servidor');
   }
 }
-
 controller.retrieveOne = async function(req, res) {
   try {
     

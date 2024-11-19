@@ -35,10 +35,11 @@
 
         <div class="filters">
             <input type="text" class="filter-input" placeholder="Buscar por peça...">
-            <select class="filter-input">
-                <option value="">Status</option>
-                <option value="completed">Concluída</option>
-                <option value="scheduled">Agendada</option>
+            <select class="filter-select">
+                <option value="">Todos os Status</option>
+                <option value="concluída">Concluída</option>
+                <option value="em manutenção">Em manutenção</option>
+                <option value="agendada">Agendada</option>
             </select>
             <input type="date" class="filter-input">
         </div>
@@ -77,10 +78,18 @@
             </div>
         </div>
     </main>
-
+    <div id="message" class="message"></div>
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Detalhes da Manutenção</h2>
+            <div id="modalContent"></div>
+        </div>
+    </div>
     <!-- Footer -->
     <footer class="footer">
         <p>Todos os direitos reservados &copy; 2024 SafeCar</p>
     </footer>
+    <script src="Scripts/historico.js"></script>
 </body>
 </html>

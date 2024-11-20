@@ -113,9 +113,9 @@ A aplicação utiliza tecnologias modernas e segue as melhores práticas de dese
 O projeto foi desenvolvido por:
 
 - **[Danilo B. Ribeiro]** – [GitHub](#) | [LinkedIn](#)  
-- **[Gustavo Moreira]** – [GitHub](#) | [LinkedIn](#)  
-- **[Thiago D. Resende]** – [GitHub](https://github.com/ThiagoResende88) | [LinkedIn](https://www.linkedin.com/in/thiago-resende-6a1ba9148/) 
-- **[Thiago D. Resende]** – [GitHub](#) | [LinkedIn](#)  
+- **[Gustavo Moreira]** – [GitHub](https://github.com/GustavoMSantoss) 
+- **[Thiago D. Resende]** – [GitHub](https://github.com/ThiagoResende88) 
+- **[Wilton M. Resende]** – [GitHub](#) 
 
 ---
 
